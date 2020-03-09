@@ -1,5 +1,6 @@
 package com.haowu.dao;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,6 +11,10 @@ import org.springframework.stereotype.Repository;
  * Description: TODO
  * Version 1.0
  */
-@Repository
+@Component
 public class IndexDao {
+
+	public void query(){
+		System.out.println("indeDao======================");
+	}
 }

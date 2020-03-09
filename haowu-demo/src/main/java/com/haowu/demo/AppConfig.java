@@ -1,5 +1,6 @@
 package com.haowu.demo;
 
+import com.haowu.dao.IndexDao;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -47,10 +48,4 @@ public class AppConfig {
 //	public DataSource dataSource(){
 //		return new DriverManagerDataSource(jdbcUrl, username, password);
 //	}
-	public static void main(String[] args){
-		AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext();
-		annotationConfigApplicationContext.refresh();
-
-
-	}
 }
