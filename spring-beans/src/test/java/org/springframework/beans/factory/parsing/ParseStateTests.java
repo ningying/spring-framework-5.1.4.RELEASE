@@ -44,6 +44,7 @@ public class ParseStateTests {
 		MockEntry two = new MockEntry();
 		MockEntry three = new MockEntry();
 
+
 		ParseState parseState = new ParseState();
 		parseState.push(one);
 		assertEquals(one, parseState.peek());
@@ -51,6 +52,8 @@ public class ParseStateTests {
 		assertEquals(two, parseState.peek());
 		parseState.push(three);
 		assertEquals(three, parseState.peek());
+
+		System.out.println(parseState.toString());
 
 		parseState.pop();
 		assertEquals(two, parseState.peek());
@@ -73,6 +76,11 @@ public class ParseStateTests {
 
 	private static class MockEntry implements ParseState.Entry {
 
+	}
+
+	@Test
+	public void test11(){
+		System.out.println("11".equals(null));
 	}
 
 }

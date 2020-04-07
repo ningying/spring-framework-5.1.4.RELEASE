@@ -159,6 +159,10 @@ class ConfigurationClassParser {
 	}
 
 
+	/**
+	 * 解析配置类
+	 * @param configCandidates
+	 */
 	public void parse(Set<BeanDefinitionHolder> configCandidates) {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();

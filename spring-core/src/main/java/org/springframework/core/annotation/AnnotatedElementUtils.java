@@ -832,7 +832,7 @@ public abstract class AnnotatedElementUtils {
 		return postProcessAndSynthesizeAggregatedResults(element, processor.getAggregatedResults());
 	}
 
-	/**
+	/**在指定元素element上, 查找指定名称annotationName或者指定类型annotationType的注解, 遵守get语法
 	 * Search for annotations of the specified {@code annotationName} or
 	 * {@code annotationType} on the specified {@code element}, following
 	 * <em>get semantics</em>.
@@ -853,7 +853,7 @@ public abstract class AnnotatedElementUtils {
 				annotationName, null, processor);
 	}
 
-	/**
+	/**在指定元素element上, 查找指定名称annotationName或者指定类型annotationType的注解, 遵守get语法
 	 * Search for annotations of the specified {@code annotationName} or
 	 * {@code annotationType} on the specified {@code element}, following
 	 * <em>get semantics</em>.

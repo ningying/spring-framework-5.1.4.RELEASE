@@ -23,7 +23,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
-/**
+/**beanDefinition构造器(建造者模式)
  * Programmatic means of constructing
  * {@link org.springframework.beans.factory.config.BeanDefinition BeanDefinitions}
  * using the builder pattern. Intended primarily for use when implementing Spring 2.0
@@ -36,14 +36,14 @@ import org.springframework.util.ObjectUtils;
  */
 public final class BeanDefinitionBuilder {
 
-	/**
+	/**创建一个BeanDefinitionBuilder来构造通用的BeanDefinition
 	 * Create a new {@code BeanDefinitionBuilder} used to construct a {@link GenericBeanDefinition}.
 	 */
 	public static BeanDefinitionBuilder genericBeanDefinition() {
 		return new BeanDefinitionBuilder(new GenericBeanDefinition());
 	}
 
-	/**
+	/**创建一个BeanDefinitionBuilder来构造通用的BeanDefinition
 	 * Create a new {@code BeanDefinitionBuilder} used to construct a {@link GenericBeanDefinition}.
 	 * @param beanClassName the class name for the bean that the definition is being created for
 	 */
@@ -53,7 +53,7 @@ public final class BeanDefinitionBuilder {
 		return builder;
 	}
 
-	/**
+	/**创建一个BeanDefinitionBuilder来构造通用的BeanDefinition
 	 * Create a new {@code BeanDefinitionBuilder} used to construct a {@link GenericBeanDefinition}.
 	 * @param beanClass the {@code Class} of the bean that the definition is being created for
 	 */
@@ -63,7 +63,7 @@ public final class BeanDefinitionBuilder {
 		return builder;
 	}
 
-	/**
+	/**创建一个BeanDefinitionBuilder来构造通用的BeanDefinition
 	 * Create a new {@code BeanDefinitionBuilder} used to construct a {@link GenericBeanDefinition}.
 	 * @param beanClass the {@code Class} of the bean that the definition is being created for
 	 * @param instanceSupplier a callback for creating an instance of the bean
@@ -84,7 +84,7 @@ public final class BeanDefinitionBuilder {
 		return rootBeanDefinition(beanClassName, null);
 	}
 
-	/**
+	/**创建BeanDefinitionBuilder来构造一个rootBeanDefinition
 	 * Create a new {@code BeanDefinitionBuilder} used to construct a {@link RootBeanDefinition}.
 	 * @param beanClassName the class name for the bean that the definition is being created for
 	 * @param factoryMethodName the name of the method to use to construct the bean instance
@@ -104,7 +104,7 @@ public final class BeanDefinitionBuilder {
 		return rootBeanDefinition(beanClass, null);
 	}
 
-	/**
+	/**创建BeanDefinitionBuilder来构造一个rootBeanDefinition
 	 * Create a new {@code BeanDefinitionBuilder} used to construct a {@link RootBeanDefinition}.
 	 * @param beanClass the {@code Class} of the bean that the definition is being created for
 	 * @param factoryMethodName the name of the method to use to construct the bean instance
@@ -143,7 +143,7 @@ public final class BeanDefinitionBuilder {
 		this.beanDefinition = beanDefinition;
 	}
 
-	/**
+	/**返回未经过校验的beanDefinition
 	 * Return the current BeanDefinition object in its raw (unvalidated) form.
 	 * @see #getBeanDefinition()
 	 */
@@ -151,7 +151,7 @@ public final class BeanDefinitionBuilder {
 		return this.beanDefinition;
 	}
 
-	/**
+	/**返回经过校验的beanDefinition
 	 * Validate and return the created BeanDefinition object.
 	 */
 	public AbstractBeanDefinition getBeanDefinition() {
@@ -285,7 +285,7 @@ public final class BeanDefinitionBuilder {
 		return this;
 	}
 
-	/**
+	/**把beanName设置到beanDefinition的dependsOn属性中
 	 * Append the specified bean name to the list of beans that this definition
 	 * depends on.
 	 */

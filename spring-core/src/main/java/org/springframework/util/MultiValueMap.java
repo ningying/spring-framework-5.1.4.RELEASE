@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.springframework.lang.Nullable;
 
-/**
+/**Map接口的扩展接口, 可以存多个值(值为一个集合)
  * Extension of the {@code Map} interface that stores multiple values.
  *
  * @author Arjen Poutsma
@@ -74,7 +74,7 @@ public interface MultiValueMap<K, V> extends Map<K, List<V>> {
 	 */
 	void setAll(Map<K, V> values);
 
-	/**
+	/**返回值的集合中的第一个元素, 组成key-value
 	 * Return a {@code Map} with the first values contained in this {@code MultiValueMap}.
 	 * @return a single value representation of this map
 	 */

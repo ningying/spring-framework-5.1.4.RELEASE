@@ -43,8 +43,10 @@ import org.springframework.util.ObjectUtils;
  */
 public class ConstructorArgumentValues {
 
+	/** 带索引的键值对 */
 	private final Map<Integer, ValueHolder> indexedArgumentValues = new LinkedHashMap<>();
 
+	/** 泛型的键值对 */
 	private final List<ValueHolder> genericArgumentValues = new ArrayList<>();
 
 

@@ -130,7 +130,7 @@ public abstract class BeanDefinitionReaderUtils {
 		return id;
 	}
 
-	/**
+	/**根据beanName和registry中是否包含这个bean来生成唯一的beanName
 	 * Turn the given bean name into a unique bean name for the given bean factory,
 	 * appending a unique counter as suffix if necessary.
 	 * @param beanName the original bean name
@@ -151,7 +151,7 @@ public abstract class BeanDefinitionReaderUtils {
 		return id;
 	}
 
-	/**
+	/**在registry中注册beanDefinition
 	 * Register the given bean definition with the given bean factory.
 	 * @param definitionHolder the bean definition including name and aliases
 	 * @param registry the bean factory to register with
@@ -162,10 +162,12 @@ public abstract class BeanDefinitionReaderUtils {
 			throws BeanDefinitionStoreException {
 
 		// Register bean definition under primary name.
+		//使用beanName做唯一标识注册
 		String beanName = definitionHolder.getBeanName();
 		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
 
 		// Register aliases for bean name, if any.
+		//注册所有的别名
 		String[] aliases = definitionHolder.getAliases();
 		if (aliases != null) {
 			for (String alias : aliases) {

@@ -47,7 +47,7 @@ import org.springframework.lang.Nullable;
  */
 public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
-	/**
+	/**调用用户自定义的解析函数
 	 * Creates a {@link BeanDefinitionBuilder} instance for the
 	 * {@link #getBeanClass bean Class} and passes it to the
 	 * {@link #doParse} strategy method.
@@ -60,31 +60,41 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 	 */
 	@Override
 	protected final AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
+		// 新建一个通用beanDefinition的构造器, BeanDefinitionBuilder内部有一个静态的beanDefinition
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
 		String parentName = getParentName(element);
 		if (parentName != null) {
+			// 给beanDefinition设置parentName属性
 			builder.getRawBeanDefinition().setParentName(parentName);
 		}
+		// 获取自定义标签中的class, 此时会调用自定义解析器(如UserBeanDefinitionParser)中的getBeanClass方法
 		Class<?> beanClass = getBeanClass(element);
 		if (beanClass != null) {
+			// 给beanDefinition设置beanClass属性
 			builder.getRawBeanDefinition().setBeanClass(beanClass);
 		}
 		else {
+			// 若子类没有重写getBeanClass方法则尝试检查子类是否重写getBeanClassName方法
 			String beanClassName = getBeanClassName(element);
 			if (beanClassName != null) {
+				// 给beanDefinition设置beanClassName属性
 				builder.getRawBeanDefinition().setBeanClassName(beanClassName);
 			}
 		}
+		// 给beanDefinition设置source属性
 		builder.getRawBeanDefinition().setSource(parserContext.extractSource(element));
+		// 若存在父类则使用父类的scope属性
 		BeanDefinition containingBd = parserContext.getContainingBeanDefinition();
 		if (containingBd != null) {
 			// Inner bean definition must receive same scope as containing bean.
 			builder.setScope(containingBd.getScope());
 		}
+		// 配置延迟加载
 		if (parserContext.isDefaultLazyInit()) {
 			// Default-lazy-init applies to custom bean definitions as well.
 			builder.setLazyInit(true);
 		}
+		// 解析xml中定义的属性名和属性值, 放到builder的beanDefinition中
 		doParse(element, parserContext, builder);
 		return builder.getBeanDefinition();
 	}

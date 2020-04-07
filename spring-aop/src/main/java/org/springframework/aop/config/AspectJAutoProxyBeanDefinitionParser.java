@@ -31,7 +31,7 @@ import org.springframework.lang.Nullable;
  * {@link BeanDefinitionParser} for the {@code aspectj-autoproxy} tag,
  * enabling the automatic application of @AspectJ-style aspects found in
  * the {@link org.springframework.beans.factory.BeanFactory}.
- *
+ * 针对aspectj-autoproxy标签的xml解析器
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @since 2.0
@@ -41,11 +41,18 @@ class AspectJAutoProxyBeanDefinitionParser implements BeanDefinitionParser {
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
+		// 注册org.springframework.aop.config.internalAutoProxyCreator
 		AopNamespaceUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext, element);
+		// 拓展bean的定义, 解析子元素
 		extendBeanDefinition(element, parserContext);
 		return null;
 	}
 
+	/**
+	 * 拓展bean的定义, 解析子元素
+	 * @param element 要解析的元素<aop:aspectj></aop:aspectj>
+	 * @param parserContext 解析上下文
+	 */
 	private void extendBeanDefinition(Element element, ParserContext parserContext) {
 		BeanDefinition beanDef =
 				parserContext.getRegistry().getBeanDefinition(AopConfigUtils.AUTO_PROXY_CREATOR_BEAN_NAME);
@@ -54,20 +61,24 @@ class AspectJAutoProxyBeanDefinitionParser implements BeanDefinitionParser {
 		}
 	}
 
+	// 解析子元素, 封装成TypedStringValue对象, 放到includePatterns中, 最后设置到beanDefinition的propertyValues属性中
 	private void addIncludePatterns(Element element, ParserContext parserContext, BeanDefinition beanDef) {
 		ManagedList<TypedStringValue> includePatterns = new ManagedList<>();
 		NodeList childNodes = element.getChildNodes();
+		// 解析子元素
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node node = childNodes.item(i);
 			if (node instanceof Element) {
 				Element includeElement = (Element) node;
 				TypedStringValue valueHolder = new TypedStringValue(includeElement.getAttribute("name"));
 				valueHolder.setSource(parserContext.extractSource(includeElement));
+				// 放到includePatterns中
 				includePatterns.add(valueHolder);
 			}
 		}
 		if (!includePatterns.isEmpty()) {
 			includePatterns.setSource(parserContext.extractSource(element));
+			// 最后设置到beanDefinition的propertyValues属性中
 			beanDef.getPropertyValues().add("includePatterns", includePatterns);
 		}
 	}

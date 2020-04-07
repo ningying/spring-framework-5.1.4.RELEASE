@@ -52,7 +52,7 @@ public abstract class BeanFactoryUtils {
 	 */
 	public static final String GENERATED_BEAN_NAME_SEPARATOR = "#";
 
-	/**
+	/**已转换的beanName缓存(带工厂bean前缀的名称 : 不带间接引用的名称)
 	 * Cache from name with factory bean prefix to stripped name without dereference.
 	 * @since 5.1
 	 * @see BeanFactory#FACTORY_BEAN_PREFIX
@@ -60,7 +60,7 @@ public abstract class BeanFactoryUtils {
 	private static final Map<String, String> transformedBeanNameCache = new ConcurrentHashMap<>();
 
 
-	/**
+	/**判断name是否是以"&"开头
 	 * Return whether the given name is a factory dereference
 	 * (beginning with the factory dereference prefix).
 	 * @param name the name of the bean
@@ -71,7 +71,7 @@ public abstract class BeanFactoryUtils {
 		return (name != null && name.startsWith(BeanFactory.FACTORY_BEAN_PREFIX));
 	}
 
-	/**
+	/**获取bean的真实名称, 剥除对工厂的间接引用前缀(如 : &)
 	 * Return the actual bean name, stripping out the factory dereference
 	 * prefix (if any, also stripping repeated factory prefixes if found).
 	 * @param name the name of the bean
@@ -83,8 +83,10 @@ public abstract class BeanFactoryUtils {
 		if (!name.startsWith(BeanFactory.FACTORY_BEAN_PREFIX)) {
 			return name;
 		}
+		// 如果key对应的value值不存在, 就尝试用mappingFunction来计算value值
 		return transformedBeanNameCache.computeIfAbsent(name, beanName -> {
 			do {
+				// 如果beanName以&开头, 则去除&截取后面的字符串
 				beanName = beanName.substring(BeanFactory.FACTORY_BEAN_PREFIX.length());
 			}
 			while (beanName.startsWith(BeanFactory.FACTORY_BEAN_PREFIX));

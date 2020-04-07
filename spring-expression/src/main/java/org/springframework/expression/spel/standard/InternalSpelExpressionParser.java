@@ -93,18 +93,23 @@ class InternalSpelExpressionParser extends TemplateAwareExpressionParser {
 	private final SpelParserConfiguration configuration;
 
 	// For rules that build nodes, they are stacked here for return
+	//
 	private final Deque<SpelNodeImpl> constructedNodes = new ArrayDeque<>();
 
 	// The expression being parsed
+	// 表达式字符串
 	private String expressionString = "";
 
 	// The token stream constructed from that expression string
+	// 从expressionString构造得到的标识符流
 	private List<Token> tokenStream = Collections.emptyList();
 
 	// length of a populated token stream
+	// 标识符流的长度
 	private int tokenStreamLength;
 
 	// Current location in the token stream when processing tokens
+	// 标识符流的指针
 	private int tokenStreamPointer;
 
 
@@ -321,17 +326,22 @@ class InternalSpelExpressionParser extends TemplateAwareExpressionParser {
 	// unaryExpression: (PLUS^ | MINUS^ | BANG^ | INC^ | DEC^) unaryExpression | primaryExpression ;
 	@Nullable
 	private SpelNodeImpl eatUnaryExpression() {
+		// 判断
 		if (peekToken(TokenKind.PLUS, TokenKind.MINUS, TokenKind.NOT)) {
 			Token t = takeToken();
+			// 递归调用
 			SpelNodeImpl expr = eatUnaryExpression();
 			Assert.state(expr != null, "No node");
 			if (t.kind == TokenKind.NOT) {
+				// 返回not操作符
 				return new OperatorNot(toPos(t), expr);
 			}
 			if (t.kind == TokenKind.PLUS) {
+				// 返回+操作符
 				return new OpPlus(toPos(t), expr);
 			}
 			Assert.isTrue(t.kind == TokenKind.MINUS, "Minus token expected");
+			// 返回-操作符
 			return new OpMinus(toPos(t), expr);
 		}
 		if (peekToken(TokenKind.INC, TokenKind.DEC)) {

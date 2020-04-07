@@ -153,7 +153,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return this.annotationType;
 	}
 
-	/**
+	/**按属性名attributeName获取String类型的值
 	 * Get the value stored under the specified {@code attributeName} as a string.
 	 * @param attributeName the name of the attribute to get;
 	 * never {@code null} or empty
@@ -165,7 +165,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return getRequiredAttribute(attributeName, String.class);
 	}
 
-	/**
+	/**按属性名attributeName获取String[]类型的值
 	 * Get the value stored under the specified {@code attributeName} as an
 	 * array of strings.
 	 * <p>If the value stored under the specified {@code attributeName} is
@@ -181,7 +181,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return getRequiredAttribute(attributeName, String[].class);
 	}
 
-	/**
+	/**按属性名attributeName获取Boolean类型的值
 	 * Get the value stored under the specified {@code attributeName} as a boolean.
 	 * @param attributeName the name of the attribute to get;
 	 * never {@code null} or empty
@@ -193,7 +193,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return getRequiredAttribute(attributeName, Boolean.class);
 	}
 
-	/**
+	/**按属性名attributeName获取Number类型的值
 	 * Get the value stored under the specified {@code attributeName} as a number.
 	 * @param attributeName the name of the attribute to get;
 	 * never {@code null} or empty
@@ -206,7 +206,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return (N) getRequiredAttribute(attributeName, Number.class);
 	}
 
-	/**
+	/**按属性名attributeName获取Enum类型的值
 	 * Get the value stored under the specified {@code attributeName} as an enum.
 	 * @param attributeName the name of the attribute to get;
 	 * never {@code null} or empty
@@ -219,7 +219,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return (E) getRequiredAttribute(attributeName, Enum.class);
 	}
 
-	/**
+	/**按属性名attributeName获取Class类型的值
 	 * Get the value stored under the specified {@code attributeName} as a class.
 	 * @param attributeName the name of the attribute to get;
 	 * never {@code null} or empty
@@ -232,7 +232,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return getRequiredAttribute(attributeName, Class.class);
 	}
 
-	/**
+	/**按属性名attributeName获取Class[]类型的值
 	 * Get the value stored under the specified {@code attributeName} as an
 	 * array of classes.
 	 * <p>If the value stored under the specified {@code attributeName} is a class,
@@ -247,7 +247,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return getRequiredAttribute(attributeName, Class[].class);
 	}
 
-	/**
+	/**按属性名attributeName获取AnnotationAttributes类型的值
 	 * Get the {@link AnnotationAttributes} stored under the specified
 	 * {@code attributeName}.
 	 * <p>Note: if you expect an actual annotation, invoke
@@ -277,7 +277,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return getRequiredAttribute(attributeName, annotationType);
 	}
 
-	/**
+	/**按属性名attributeName获取AnnotationAttributes[]类型的值
 	 * Get the array of {@link AnnotationAttributes} stored under the specified
 	 * {@code attributeName}.
 	 * <p>If the value stored under the specified {@code attributeName} is
@@ -295,7 +295,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return getRequiredAttribute(attributeName, AnnotationAttributes[].class);
 	}
 
-	/**
+	/**按属性名attributeName获取annotationType数组(相当于annotationType[])类型的值
 	 * Get the array of type {@code annotationType} stored under the specified
 	 * {@code attributeName}.
 	 * <p>If the value stored under the specified {@code attributeName} is
@@ -315,7 +315,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		return (A[]) getRequiredAttribute(attributeName, array.getClass());
 	}
 
-	/**
+	/**通过attributeName获取对应的值, 且该值的类型是expectedType, 如果expectedType是数组, 返回值就是单个元素的数组
 	 * Get the value stored under the specified {@code attributeName},
 	 * ensuring that the value is of the {@code expectedType}.
 	 * <p>If the {@code expectedType} is an array and the value stored
@@ -334,14 +334,21 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 	private <T> T getRequiredAttribute(String attributeName, Class<T> expectedType) {
 		Assert.hasText(attributeName, "'attributeName' must not be null or empty");
 		Object value = get(attributeName);
+		// value不能为空
 		assertAttributePresence(attributeName, value);
+		// value不能为异常
 		assertNotException(attributeName, value);
+		// 如果value不属于expectedType类型, 且expectedType是数组, 且value属于expectedType的组件类型
 		if (!expectedType.isInstance(value) && expectedType.isArray() &&
 				expectedType.getComponentType().isInstance(value)) {
+			// 创建一个长度为1且组件类型为expectedType.getComponentType()的数组对象
 			Object array = Array.newInstance(expectedType.getComponentType(), 1);
+			// 给array的第一个元素赋值value
 			Array.set(array, 0, value);
+			// 用数组包装一层返回
 			value = array;
 		}
+		// 判断attributeValue是否属于expectedType类型, 不属于就直接抛异常
 		assertAttributeType(attributeName, value, expectedType);
 		return (T) value;
 	}
@@ -360,6 +367,7 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 		}
 	}
 
+	// 判断attributeValue是否属于expectedType类型, 不属于就直接抛异常
 	private void assertAttributeType(String attributeName, Object attributeValue, Class<?> expectedType) {
 		if (!expectedType.isInstance(attributeValue)) {
 			throw new IllegalArgumentException(String.format(

@@ -32,8 +32,10 @@ class Token {
 	@Nullable
 	String data;
 
+	// 第一个字符的索引
 	int startPos;  // index of first character
 
+	// 最后一个字符的索引
 	int endPos;  // index of char after the last character
 
 
@@ -59,10 +61,12 @@ class Token {
 		return this.kind;
 	}
 
+	/** 是否是标识符号 */
 	public boolean isIdentifier() {
 		return (this.kind == TokenKind.IDENTIFIER);
 	}
 
+	/** 是否是数值关系操作符 */
 	public boolean isNumericRelationalOperator() {
 		return (this.kind == TokenKind.GT || this.kind == TokenKind.GE || this.kind == TokenKind.LT ||
 				this.kind == TokenKind.LE || this.kind==TokenKind.EQ || this.kind==TokenKind.NE);

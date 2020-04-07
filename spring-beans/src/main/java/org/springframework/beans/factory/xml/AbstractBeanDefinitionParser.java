@@ -60,9 +60,11 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	@Override
 	@Nullable
 	public final BeanDefinition parse(Element element, ParserContext parserContext) {
+		// 调用自定义的解析函数, 把xml解析成beanDefinition
 		AbstractBeanDefinition definition = parseInternal(element, parserContext);
 		if (definition != null && !parserContext.isNested()) {
 			try {
+				// 解析beanDefinition的id属性
 				String id = resolveId(element, definition, parserContext);
 				if (!StringUtils.hasText(id)) {
 					parserContext.getReaderContext().error(
@@ -70,17 +72,24 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 									+ "' when used as a top-level tag", element);
 				}
 				String[] aliases = null;
+				//shouldParseNameAsAliases 判断"name"属性是否要解析成bean的别名, 默认为true
 				if (shouldParseNameAsAliases()) {
 					String name = element.getAttribute(NAME_ATTRIBUTE);
 					if (StringUtils.hasLength(name)) {
+						// 去除字符数组每个元素的空格符, 得到别名数组, name可以是逗号分隔的字符串
 						aliases = StringUtils.trimArrayElements(StringUtils.commaDelimitedListToStringArray(name));
 					}
 				}
+				//将AbstractBeanDefinition转换为BeanDefinitionHolder 并注册
 				BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id, aliases);
+				// 注册bean
 				registerBeanDefinition(holder, parserContext.getRegistry());
 				if (shouldFireEvents()) {
+					//需要通知监听器则进行处理
 					BeanComponentDefinition componentDefinition = new BeanComponentDefinition(holder);
+					// 用户自定义的回调方法(可以在beanComponentDefinition被解析后, 在beanComponentDefinition注册之前实现自定义的逻辑)
 					postProcessComponentDefinition(componentDefinition);
+					// 添加component-registered事件监听器
 					parserContext.registerComponent(componentDefinition);
 				}
 			}
@@ -93,7 +102,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 		return definition;
 	}
 
-	/**
+	/**给beanDefinition生成ID, 如果已经存在"id"属性, 直接返回id, 如果没有按照generateBeanName生成
 	 * Resolve the ID for the supplied {@link BeanDefinition}.
 	 * <p>When using {@link #shouldGenerateId generation}, a name is generated automatically.
 	 * Otherwise, the ID is extracted from the "id" attribute, potentially with a
@@ -109,11 +118,13 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	protected String resolveId(Element element, AbstractBeanDefinition definition, ParserContext parserContext)
 			throws BeanDefinitionStoreException {
 
+		// shouldGenerateId默认是false, 可以在子类中修改
 		if (shouldGenerateId()) {
 			return parserContext.getReaderContext().generateBeanName(definition);
 		}
 		else {
 			String id = element.getAttribute(ID_ATTRIBUTE);
+			// shouldGenerateIdAsFallback默认是false
 			if (!StringUtils.hasText(id) && shouldGenerateIdAsFallback()) {
 				id = parserContext.getReaderContext().generateBeanName(definition);
 			}
@@ -203,7 +214,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 		return true;
 	}
 
-	/**
+	/**用户自定义的回调方法(可以在beanComponentDefinition被解析后, 在beanComponentDefinition注册之前实现自定义的逻辑)
 	 * Hook method called after the primary parsing of a
 	 * {@link BeanComponentDefinition} but before the
 	 * {@link BeanComponentDefinition} has been registered with a

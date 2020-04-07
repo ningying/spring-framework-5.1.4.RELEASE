@@ -26,7 +26,7 @@ import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.BeanReference;
 import org.springframework.lang.Nullable;
 
-/**
+/**基于BeanDefinition的包装类, 暴露beanDefinition和内部的beanDefinition
  * ComponentDefinition based on a standard BeanDefinition, exposing the given bean
  * definition as well as inner bean definitions and bean references for the given bean.
  *
@@ -73,12 +73,15 @@ public class BeanComponentDefinition extends BeanDefinitionHolder implements Com
 		PropertyValues propertyValues = beanDefinitionHolder.getBeanDefinition().getPropertyValues();
 		for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
 			Object value = propertyValue.getValue();
+			// 说明是内部bean
 			if (value instanceof BeanDefinitionHolder) {
 				innerBeans.add(((BeanDefinitionHolder) value).getBeanDefinition());
 			}
+			// 说明是内部bean
 			else if (value instanceof BeanDefinition) {
 				innerBeans.add((BeanDefinition) value);
 			}
+			// 说明是bean的引用
 			else if (value instanceof BeanReference) {
 				references.add((BeanReference) value);
 			}

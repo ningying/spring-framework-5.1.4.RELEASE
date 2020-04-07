@@ -980,7 +980,7 @@ public abstract class StringUtils {
 		return toStringArray(Collections.list(enumeration));
 	}
 
-	/**
+	/**去除字符数组中每个元素的空格符
 	 * Trim the elements of the given {@code String} array,
 	 * calling {@code String.trim()} on each of them.
 	 * @param array the original {@code String} array (potentially empty)
@@ -1166,7 +1166,7 @@ public abstract class StringUtils {
 		return delimitedListToStringArray(str, delimiter, null);
 	}
 
-	/**
+	/**把有分隔符(如逗号)分隔的字符串转成字符数组, charsToDelete是需要删除的元素(如换行符\r\n\f)
 	 * Take a {@code String} that is a delimited list and convert it into
 	 * a {@code String} array.
 	 * <p>A single {@code delimiter} may consist of more than one character,
@@ -1204,6 +1204,7 @@ public abstract class StringUtils {
 				result.add(deleteAny(str.substring(pos, delPos), charsToDelete));
 				pos = delPos + delimiter.length();
 			}
+			// 处理尾部的元素(最后一个)
 			if (str.length() > 0 && pos <= str.length()) {
 				// Add rest of String, but not in case of empty input.
 				result.add(deleteAny(str.substring(pos), charsToDelete));
@@ -1212,7 +1213,7 @@ public abstract class StringUtils {
 		return toStringArray(result);
 	}
 
-	/**
+	/**把逗号分隔的字符串转成字符数组
 	 * Convert a comma delimited list (e.g., a row from a CSV file) into an
 	 * array of strings.
 	 * @param str the input {@code String} (potentially {@code null} or empty)

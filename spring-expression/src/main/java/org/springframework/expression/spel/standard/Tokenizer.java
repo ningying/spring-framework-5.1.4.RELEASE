@@ -24,9 +24,9 @@ import org.springframework.expression.spel.InternalParseException;
 import org.springframework.expression.spel.SpelMessage;
 import org.springframework.expression.spel.SpelParseException;
 
-/**
+/**Lex是生成扫描器的工具
  * Lex some input data into a stream of tokens that can then be parsed.
- *
+ * 标识器, 把输入的数据转成可以被解析的字符流
  * @author Andy Clement
  * @author Juergen Hoeller
  * @author Phillip Webb

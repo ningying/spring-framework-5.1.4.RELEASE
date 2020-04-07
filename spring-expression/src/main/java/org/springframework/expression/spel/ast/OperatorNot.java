@@ -27,7 +27,7 @@ import org.springframework.expression.spel.support.BooleanTypedValue;
 
 /**
  * Represents a NOT operation.
- *
+ * not操作符
  * @author Andy Clement
  * @author Mark Fisher
  * @author Oliver Becker

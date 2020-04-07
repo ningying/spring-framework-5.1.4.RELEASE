@@ -37,15 +37,18 @@ import org.springframework.util.ObjectUtils;
  */
 public class TypedStringValue implements BeanMetadataElement {
 
+	// 目标值
 	@Nullable
 	private String value;
 
+	// 目标类型
 	@Nullable
 	private volatile Object targetType;
 
 	@Nullable
 	private Object source;
 
+	// 指定的类型名称
 	@Nullable
 	private String specifiedTypeName;
 
@@ -130,7 +133,7 @@ public class TypedStringValue implements BeanMetadataElement {
 		this.targetType = targetTypeName;
 	}
 
-	/**
+	/** 获取targetType对应的类名
 	 * Return the type to convert to.
 	 */
 	@Nullable
@@ -151,7 +154,7 @@ public class TypedStringValue implements BeanMetadataElement {
 		return (this.targetType instanceof Class);
 	}
 
-	/**
+	/** 根据targetTypeName和classLoader解析成目标类型
 	 * Determine the type to convert to, resolving it from a specified class name
 	 * if necessary. Will also reload a specified Class from its name when called
 	 * with the target type already resolved.
@@ -216,6 +219,7 @@ public class TypedStringValue implements BeanMetadataElement {
 	}
 
 
+	// 比较是否相等, 需要value和targetType同时相等
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {

@@ -94,7 +94,7 @@ public abstract class CollectionUtils {
 		}
 	}
 
-	/**
+	/**把properties文件中的配置转成map的键值对
 	 * Merge the given Properties instance into the given Map,
 	 * copying all properties (key-value pairs) over.
 	 * <p>Uses {@code Properties.propertyNames()} to even catch

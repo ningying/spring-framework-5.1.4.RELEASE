@@ -205,6 +205,7 @@ public abstract class AbstractApplicationEventMulticaster
 	}
 
 	/**
+	 * 真正的检索应用的监听器, 根据给定的事件和资源类型检索
 	 * Actually retrieve the application listeners for the given event and source type.
 	 * @param eventType the event type
 	 * @param sourceType the event source type

@@ -239,7 +239,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 		this.targetType = original.targetType;
 	}
 
-	/**
+	/**深拷贝original
 	 * Create a new RootBeanDefinition as deep copy of the given
 	 * bean definition.
 	 * @param original the original bean definition to copy from

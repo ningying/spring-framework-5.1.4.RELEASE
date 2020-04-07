@@ -14,7 +14,7 @@
  * <li>Generally, you will put in the themes resource bundles the paths of CSS files, images and HTML constructs.</li>
  * <li>For retrieving themes data, you can either use the spring:theme tag in JSP or access via the
  * {@code RequestContext} for other view technologies.</li>
- * <li>The {@code pagedlist} demo application uses themes</li>
+ * <li>The {@code pagedlist} com.haowu.demo application uses themes</li>
  * </ul>
  */
 @NonNullApi

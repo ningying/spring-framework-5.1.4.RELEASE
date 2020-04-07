@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-/**
+/**可变的键值对集合, 支持深拷贝及从map转换
  * The default implementation of the {@link PropertyValues} interface.
  * Allows simple manipulation of properties, and provides constructors
  * to support deep copy and construction from a Map.

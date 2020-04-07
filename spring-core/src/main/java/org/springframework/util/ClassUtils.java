@@ -220,7 +220,7 @@ public abstract class ClassUtils {
 		}
 	}
 
-	/**
+	/**获取name对应的类字节码, 类似于Class.forName(), 但可以返回基础类型和数组类型的字节码, 而且还能解析内部类
 	 * Replacement for {@code Class.forName()} that also returns Class instances
 	 * for primitives (e.g. "int") and array class names (e.g. "String[]").
 	 * Furthermore, it is also capable of resolving inner class names in Java source

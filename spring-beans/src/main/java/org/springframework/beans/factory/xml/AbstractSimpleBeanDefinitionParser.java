@@ -125,21 +125,25 @@ public abstract class AbstractSimpleBeanDefinitionParser extends AbstractSingleB
 	 */
 	@Override
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+		// 解析xml配置的< name-space = "http://spring.io">成attribute{localName : name-space, value : "http://spring.io"}
 		NamedNodeMap attributes = element.getAttributes();
 		for (int x = 0; x < attributes.getLength(); x++) {
 			Attr attribute = (Attr) attributes.item(x);
 			if (isEligibleAttribute(attribute, parserContext)) {
+				// 把xml中配置的诸如"transaction-manager"的属性名转成bean的property
 				String propertyName = extractPropertyName(attribute.getLocalName());
 				Assert.state(StringUtils.hasText(propertyName),
 						"Illegal property name returned from 'extractPropertyName(String)': cannot be null or empty.");
+				// 把{propertyName : value} 放到beanDefinition中的propertyValue属性中
 				builder.addPropertyValue(propertyName, attribute.getValue());
 			}
 		}
+		// 回调函数(待用户实现)
 		postProcess(builder, element);
 	}
 
 	/**
-	 * Determine whether the given attribute is eligible for being
+	 * Determine whether the given attribute is eligible (合格) for being
 	 * turned into a corresponding bean property value.
 	 * <p>The default implementation considers any attribute as eligible,
 	 * except for the "id" attribute and namespace declaration attributes.
@@ -165,7 +169,7 @@ public abstract class AbstractSimpleBeanDefinitionParser extends AbstractSingleB
 		return !ID_ATTRIBUTE.equals(attributeName);
 	}
 
-	/**
+	/**把xml中配置的诸如"transaction-manager"的属性名转成bean的property
 	 * Extract a JavaBean property name from the supplied attribute name.
 	 * <p>The default implementation uses the
 	 * {@link Conventions#attributeNameToPropertyName(String)}
@@ -182,7 +186,7 @@ public abstract class AbstractSimpleBeanDefinitionParser extends AbstractSingleB
 		return Conventions.attributeNameToPropertyName(attributeName);
 	}
 
-	/**
+	/**回调函数(用户可以在解析完成后更改beanDefinition)
 	 * Hook method that derived classes can implement to inspect/change a
 	 * bean definition after parsing is complete.
 	 * <p>The default implementation does nothing.

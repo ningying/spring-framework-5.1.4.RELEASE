@@ -111,12 +111,14 @@ public final class ParserContext {
 		registerComponent(popContainingComponent());
 	}
 
+	// 添加监听器
 	public void registerComponent(ComponentDefinition component) {
 		CompositeComponentDefinition containingComponent = getContainingComponent();
 		if (containingComponent != null) {
 			containingComponent.addNestedComponent(component);
 		}
 		else {
+			// 添加component-registered事件监听器
 			this.readerContext.fireComponentRegistered(component);
 		}
 	}

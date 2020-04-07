@@ -15,4 +15,5 @@ dependencies {
     compile(project(":spring-context"))
     testCompile("junit:junit:4.12")
     optional("junit:junit:4.12")
+    optional("org.projectlombok:lombok:1.14.8")
 }

@@ -380,6 +380,7 @@ public class PropertiesBeanDefinitionReader extends AbstractBeanDefinitionReader
 					if (logger.isTraceEnabled()) {
 						logger.trace("Found bean name '" + beanName + "'");
 					}
+					// 如果register中没有beanName对应的bean, 就往register中注册
 					if (!getRegistry().containsBeanDefinition(beanName)) {
 						// If we haven't already registered it...
 						registerBeanDefinition(beanName, map, prefix + beanName, resourceDescription);
@@ -402,8 +403,8 @@ public class PropertiesBeanDefinitionReader extends AbstractBeanDefinitionReader
 	/**
 	 * Get all property values, given a prefix (which will be stripped)
 	 * and add the bean they define to the factory with the given name.
-	 * @param beanName name of the bean to define
-	 * @param map a Map containing string pairs
+	 * @param beanName name of the bean to define #bean的名称
+	 * @param map a Map containing string pairs   #包含键值对的map集合
 	 * @param prefix prefix of each entry, which will be stripped
 	 * @param resourceDescription description of the resource that the
 	 * Map came from (for logging purposes)
@@ -496,6 +497,7 @@ public class PropertiesBeanDefinitionReader extends AbstractBeanDefinitionReader
 			bd.setLazyInit(lazyInit);
 			bd.setConstructorArgumentValues(cas);
 			bd.setPropertyValues(pvs);
+			// 往register中注册bean
 			getRegistry().registerBeanDefinition(beanName, bd);
 		}
 		catch (ClassNotFoundException ex) {

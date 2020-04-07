@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
  * Description: TODO
  * Version 1.0
  */
+@SuppressWarnings("deprecation")
 public class BeanFactoryTest {
 
 	@Test

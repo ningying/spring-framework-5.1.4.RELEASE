@@ -20,4 +20,9 @@ public class Test {
 		IndexDao indexDao = (IndexDao) context.getBean("indexDao");
 		indexDao.query();
 	}
+
+	@org.junit.Test
+	public void test(){
+		System.out.println(11 >>> 1);
+	}
 }

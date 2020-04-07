@@ -71,28 +71,40 @@ public abstract class AopNamespaceUtils {
 		registerComponentIfNecessary(beanDefinition, parserContext);
 	}
 
+	//注册org.springframework.aop.config.internalAutoProxyCreator
 	public static void registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 			ParserContext parserContext, Element sourceElement) {
 
+		// 往registry中注册org.springframework.aop.config.internalAutoProxyCreator
 		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
+		// 给org.springframework.aop.config.internalAutoProxyCreator这个bean设置proxyTargetClass和exposeProxy属性
 		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);
+		// 添加事件监听器
 		registerComponentIfNecessary(beanDefinition, parserContext);
 	}
 
+	/**
+	 * 给org.springframework.aop.config.internalAutoProxyCreator这个bean设置proxyTargetClass和exposeProxy属性
+ 	 */
 	private static void useClassProxyingIfNecessary(BeanDefinitionRegistry registry, @Nullable Element sourceElement) {
 		if (sourceElement != null) {
+			// 获取"proxy-target-class"属性的值
 			boolean proxyTargetClass = Boolean.parseBoolean(sourceElement.getAttribute(PROXY_TARGET_CLASS_ATTRIBUTE));
 			if (proxyTargetClass) {
+				// 如果"proxy-target"=true, 就把org.springframework.aop.config.internalAutoProxyCreator这个bean的proxyTargetClass属性设置为true
 				AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);
 			}
+			// 获取"expose-proxy"属性的值
 			boolean exposeProxy = Boolean.parseBoolean(sourceElement.getAttribute(EXPOSE_PROXY_ATTRIBUTE));
 			if (exposeProxy) {
+				// 如果"expose-proxy"=true, 就把org.springframework.aop.config.internalAutoProxyCreator这个bean的exposeProxy属性设置为true
 				AopConfigUtils.forceAutoProxyCreatorToExposeProxy(registry);
 			}
 		}
 	}
 
+	// 添加监听器
 	private static void registerComponentIfNecessary(@Nullable BeanDefinition beanDefinition, ParserContext parserContext) {
 		if (beanDefinition != null) {
 			parserContext.registerComponent(

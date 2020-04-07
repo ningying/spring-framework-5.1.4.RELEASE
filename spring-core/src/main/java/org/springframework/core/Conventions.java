@@ -221,7 +221,7 @@ public final class Conventions {
 		return (pluralize ? pluralize(name) : name + reactiveSuffix);
 	}
 
-	/**
+	/**把xml中诸如"transaction-manager"的属性名转成bean的property
 	 * Convert {@code String}s in attribute name format (e.g. lowercase, hyphens
 	 * separating words) into property name format (camel-case). For example
 	 * {@code transaction-manager} becomes {@code "transactionManager"}.

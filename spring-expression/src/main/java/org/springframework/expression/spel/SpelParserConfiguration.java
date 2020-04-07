@@ -33,7 +33,9 @@ public class SpelParserConfiguration {
 	private static final SpelCompilerMode defaultCompilerMode;
 
 	static {
+		// 从配置文件中读取spring.expression.compiler.mode
 		String compilerMode = SpringProperties.getProperty("spring.expression.compiler.mode");
+		// 如果compilerMode为null, 默认的编译模式defaultCompilerMode设置为OFF
 		defaultCompilerMode = (compilerMode != null ?
 				SpelCompilerMode.valueOf(compilerMode.toUpperCase()) : SpelCompilerMode.OFF);
 	}
