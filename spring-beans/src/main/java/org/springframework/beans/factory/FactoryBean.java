@@ -18,7 +18,14 @@ package org.springframework.beans.factory;
 
 import org.springframework.lang.Nullable;
 
-/**
+/**1.这个接口一般被用在BeanFactory中, 让其它对象实现
+ * 2.如果某个bean实现了这个接口, 它通常作为bean工厂来暴露其它bean, 一般不会用来暴露自己
+ * 3.实现了FactoryBean接口的bean不能用作普通bean, 虽然它被定义成bean的方式,但是getObject()返回的总是它创建的bean对象
+ * 4.FactoryBean支持singleton和prototype模式, 既可以懒加载bean也可以在beanFactory启动时立即创建bean对象
+ * 5.FactoryBean在框架中被大量使用, 如ProxyFactoryBean和JndiObjectFactoryBean, 也能被自定义的组件使用, 但是, FactoryBean通常只被底层代码使用
+ * 6.FactoryBean一般是基于编程式的, 不基于注解和依赖注入, 有可能在beanFactory启动之前就调用getObjectType()和getObject()方法, 甚至在后置处理器触发之前, 如果需求获取其它的bean, 可以实现BeanFactoryAware接口, 然后手动获取
+ * 7.FactoryBean在beanFactory中是同步创建的, 内部不需要同步机制, 除非在内部需要懒加载
+ *
  * Interface to be implemented by objects used within a {@link BeanFactory} which
  * are themselves factories for individual objects. If a bean implements this
  * interface, it is used as a factory for an object to expose, not directly as a
@@ -58,7 +65,10 @@ import org.springframework.lang.Nullable;
  */
 public interface FactoryBean<T> {
 
-	/**
+	/**返回bean实例(共享的或者是单例的), 这个bean实例通常由beanFactory来管理,
+	 * 如果当getObject()方法被调用时, 这个bean还未完全初始化(例如在循环依赖的时候), 就抛出FactoryBeanNotInitializedException异常,
+	 * 从spring2.0开始允许返回null而不抛异常
+	 * 官方建议FactoryBean接口的实现类抛异常
 	 * Return an instance (possibly shared or independent) of the object
 	 * managed by this factory.
 	 * <p>As with a {@link BeanFactory}, this allows support for both the
@@ -78,7 +88,12 @@ public interface FactoryBean<T> {
 	@Nullable
 	T getObject() throws Exception;
 
-	/**
+	/**返回FactoryBean创建的bean实例的类型, 如果不能提前知道就返回null
+	 * 这个方法允许在还未初始化bean实例之前, 检查bean的类型(如自动注入的时候)
+	 * 在singleton模式下, 尽量避免用这个方法来创建单例bean
+	 * 在prototype模式下, 建议返回有意义的类型
+	 * 这个方法可以在factoryBean完成初始化之前被调用, 不管是bean实例正在创建还是bean实例已经创建完成, 都可以调用
+	 * 注意 : 自动注入会忽略这里返回null的FactoryBean, 因此强烈建议根据当前FactoryBean的状态适当地实现这个方法
 	 * Return the type of object that this FactoryBean creates,
 	 * or {@code null} if not known in advance.
 	 * <p>This allows one to check for specific types of beans without
@@ -100,7 +115,11 @@ public interface FactoryBean<T> {
 	@Nullable
 	Class<?> getObjectType();
 
-	/**
+	/**判断这个被beanFactory管理的bean实例是否是单例的, 如果是, 则getObject()方法永远返回同一个对象?
+	 * 如果一个FactoryBean持有一个单例的bean, 则getObject()返回的对象有可能是取自它所属的BeanFactory的缓存, 因此不会返回true, 除非这个FactoryBean一直暴露同一个引用变量,
+	 * FactoryBean的singleton状态是由所属的BeanFactory提供的,通常被定义成单例
+	 * 这个方法返回false不一定代表返回的bean实例是独立的实例, 实现了SmartFactoryBean接口的类可能通过isPrototype()方法显式的定义了这个FactoryBean就是独立的实例
+	 * 仅仅实现了FactoryBean接口的类, 在isSingleton()方法返回false时, 只会简单返回独立的实例, 因为FactoryBean默认是返回单例bean
 	 * Is the object managed by this factory a singleton? That is,
 	 * will {@link #getObject()} always return the same object
 	 * (a reference that can be cached)?

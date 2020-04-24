@@ -239,6 +239,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (!this.earlyProxyReferences.contains(cacheKey)) {
 			this.earlyProxyReferences.add(cacheKey);
 		}
+		// 如果这个bean需要代理, 返回包装后的对象
 		return wrapIfNecessary(bean, beanName, cacheKey);
 	}
 
@@ -326,7 +327,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 	}
 
-	/**
+	/**在这个bean外层包装一层(如果这个bean需要代理)
 	 * Wrap the given bean if necessary, i.e. if it is eligible for being proxied.
 	 * @param bean the raw bean instance
 	 * @param beanName the name of the bean
@@ -337,9 +338,11 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {
 			return bean;
 		}
+		// 如果这个bean不需要代理, 就直接返回
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
+		// 如果bean是基础class, 或者自动代理应该忽略这个类beanName
 		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
@@ -347,11 +350,15 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 		// Create proxy if we have advice.
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
+		// 如果这个bean需要被代理, 即specificInterceptors不为空
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
+			// 创建代理
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
+			// 放入缓存
 			this.proxyTypes.put(cacheKey, proxy.getClass());
+			// 返回代理
 			return proxy;
 		}
 
@@ -359,7 +366,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return bean;
 	}
 
-	/**
+	/**判断beanClass是否是基础class(包括 : Advice.class, Pointcut.class, Advisor.class, AopInfrastructureBean.class)
 	 * Return whether the given bean class represents an infrastructure class
 	 * that should never be proxied.
 	 * <p>The default implementation considers Advices, Advisors and
@@ -382,7 +389,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return retVal;
 	}
 
-	/**
+	/**子类应该重写这个方法, 如果给定的bean不应该被post-processor自动代理就返回true
 	 * Subclasses should override this method to return {@code true} if the
 	 * given bean should not be considered for auto-proxying by this post-processor.
 	 * <p>Sometimes we need to be able to avoid this happening, e.g. if it will lead to
@@ -395,6 +402,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * @see org.springframework.beans.factory.config.AutowireCapableBeanFactory#ORIGINAL_INSTANCE_SUFFIX
 	 */
 	protected boolean shouldSkip(Class<?> beanClass, String beanName) {
+		// 判断beanName是否符合原始实例的名称格式(以.ORIGINAL结尾), 目的是为了代理略过这些类
 		return AutoProxyUtils.isOriginalInstance(beanName, beanClass);
 	}
 
@@ -569,7 +577,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	}
 
 
-	/**
+	/**返回这个bean是否需要被代理, 或者返回额外的advice, 或者返回advisors
 	 * Return whether the given bean is to be proxied, what additional
 	 * advices (e.g. AOP Alliance interceptors) and advisors to apply.
 	 * @param beanClass the class of the bean to advise

@@ -116,7 +116,7 @@ public abstract class AutoProxyUtils {
 		}
 	}
 
-	/**
+	/**判断beanName是否符合原始实例的名称格式(以.ORIGINAL结尾), 目的是为了代理略过这些类
 	 * Determine whether the given bean name indicates an "original instance"
 	 * according to {@link AutowireCapableBeanFactory#ORIGINAL_INSTANCE_SUFFIX},
 	 * skipping any proxy attempts for it.

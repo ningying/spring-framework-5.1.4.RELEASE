@@ -18,15 +18,17 @@ package org.springframework.beans.factory;
 
 import org.springframework.beans.BeansException;
 
-/**
+/**定义一个可以返回Object实例的工厂(可能是共享的实例也可能是独立的实例)
+ * 这个接口通常用于封装泛型工厂，在每次调用时返回某个目标对象的新实例(原型)。
+ * 这个接口类似于FactoryBean，但是后者的实现通常被定义为BeanFactory中的SPI实例，而这个类的实现通常被定义为作为API(通过注入)提供给其他bean。
  * Defines a factory which can return an Object instance
  * (possibly shared or independent) when invoked.
  *
- * <p>This interface is typically used to encapsulate a generic factory which
+ * <p>This interface is typically used to encapsulate (简述、概括、压缩) a generic factory which
  * returns a new instance (prototype) of some target object on each invocation.
  *
  * <p>This interface is similar to {@link FactoryBean}, but implementations
- * of the latter are normally meant to be defined as SPI instances in a
+ * of the latter are normally meant to be defined as SPI （ Service Provider Interface，是一种服务发现机制， dubbo经常用） instances in a
  * {@link BeanFactory}, while implementations of this class are normally meant
  * to be fed as an API to other beans (through injection). As such, the
  * {@code getObject()} method has different exception handling behavior.

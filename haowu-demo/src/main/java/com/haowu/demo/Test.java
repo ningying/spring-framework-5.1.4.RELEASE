@@ -25,4 +25,9 @@ public class Test {
 	public void test(){
 		System.out.println(11 >>> 1);
 	}
+
+	@org.junit.Test
+	public void testNullCompare(){
+		System.out.println(Boolean.TRUE.equals(null));
+	}
 }

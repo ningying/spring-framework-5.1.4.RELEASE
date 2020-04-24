@@ -100,7 +100,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 		return eligibleAdvisors;
 	}
 
-	/**
+	/**查找所有的候选Advisor用来自动代理
 	 * Find all candidate Advisors to use in auto-proxying.
 	 * @return the List of candidate Advisors
 	 */

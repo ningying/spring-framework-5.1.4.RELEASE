@@ -345,8 +345,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 				}
 
+				// 实例化依赖的bean后便可以实例化mbd本身了
 				// Create bean instance. 如果mbd是单例的, 创建单例bean
 				if (mbd.isSingleton()) {
+					//singleton模式的创建
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							return createBean(beanName, mbd, args);
@@ -361,7 +363,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					});
 					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 				}
-
+				//prototype模式的创建
 				else if (mbd.isPrototype()) {
 					// It's a prototype -> create a new instance.
 					Object prototypeInstance = null;
@@ -374,7 +376,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 					bean = getObjectForBeanInstance(prototypeInstance, name, beanName, mbd);
 				}
-
+				// 指定scope上实例化bean(诸如request之类)
 				else {
 					String scopeName = mbd.getScope();
 					final Scope scope = this.scopes.get(scopeName);
@@ -407,6 +409,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
+		// 检查需要的类型是否符合bean的实际类型
 		// Check if required type matches the type of the actual bean instance.
 		if (requiredType != null && !requiredType.isInstance(bean)) {
 			try {
@@ -917,7 +920,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		return this.beanPostProcessors;
 	}
 
-	/**
+	/**判断这个bean工厂是否有InstantiationAwareBeanPostProcessor后置处理器
 	 * Return whether this factory holds a InstantiationAwareBeanPostProcessor
 	 * that will get applied to singleton beans on shutdown.
 	 * @see #addBeanPostProcessor
@@ -1399,7 +1402,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		this.mergedBeanDefinitions.keySet().removeIf(bean -> !isBeanEligibleForMetadataCaching(bean));
 	}
 
-	/**
+	/**为指定的beanDefinition(mbd)解析class
+	 * 把bean的类名解析成类的引用(beanName--> Class)
+	 * 而且把解析得到的class存放在beanDefinition中
 	 * Resolve the bean class for the specified bean definition,
 	 * resolving a bean class name into a Class reference (if necessary)
 	 * and storing the resolved Class in the bean definition for further use.
@@ -1416,6 +1421,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 		try {
 			if (mbd.hasBeanClass()) {
+				// 如果已经有beanClass了, 说明已经解析过了, 直接返回
 				return mbd.getBeanClass();
 			}
 			if (System.getSecurityManager() != null) {
@@ -1675,6 +1681,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**根据beanInstance和name获取bean实例, 或者利用FactoryBean生成bean
+	 * 如果beanInstance是FactoryBean且name以'&'开头, 直接返回beanInstance
+	 * 如果beanInstance不是FactoryBean, 直接返回beanInstance
+	 * 如果beanInstance是FactoryBean且name不以'&'开头, 则返回beanInstance创建的bean实例, 不返回beanInstance本身
 	 * Get the object for the given bean instance, either the bean
 	 * instance itself or its created object in case of a FactoryBean.
 	 * @param beanInstance the shared bean instance
@@ -1687,7 +1696,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
-		// 判断name是否是以"&"开头
+		// 判断name是否是以"&"开头(判断name是否是bean工厂的间接引用)
 		if (BeanFactoryUtils.isFactoryDereference(name)) {
 			if (beanInstance instanceof NullBean) {
 				return beanInstance;
@@ -1707,6 +1716,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			return beanInstance;
 		}
 
+		// 加载FactoryBean
 		Object object = null;
 		if (mbd == null) {
 			// 如果rootBeanDefinition为null, 则从factoryBeanObjectCache缓存中取
@@ -1720,7 +1730,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (mbd == null && containsBeanDefinition(beanName)) {
 				mbd = getMergedLocalBeanDefinition(beanName);
 			}
+			// 判断是否是用户自定义的而不是应用程序本身定义的synthetic--人造的
 			boolean synthetic = (mbd != null && mbd.isSynthetic());
+			// 从指定的FactoryBean中获取bean实例
 			object = getObjectFromFactoryBean(factory, beanName, !synthetic);
 		}
 		return object;

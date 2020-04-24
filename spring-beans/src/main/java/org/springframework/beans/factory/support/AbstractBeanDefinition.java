@@ -997,7 +997,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.synthetic = synthetic;
 	}
 
-	/**
+	/**判断这个bean是不是用户自定义的
 	 * Return whether this bean definition is 'synthetic', that is,
 	 * not defined by the application itself.
 	 */
@@ -1108,7 +1108,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		}
 	}
 
-	/**
+	/**验证及准备这个bean所有的方法重写, 检查是否存在有同名的其他方法, 如果没有, 就把这个方法标识为不可重载
+	 * 用来处理spring配置中的lookup-method和replace-method属性的
 	 * Validate and prepare the method overrides defined for this bean.
 	 * Checks for existence of a method with the specified name.
 	 * @throws BeanDefinitionValidationException in case of validation failure
@@ -1125,7 +1126,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		}
 	}
 
-	/**
+	/**验证及准备指定的方法是否重写, 检查是否有同名的其他方法, 如果没有, 就把这个方法标识为不可重载
+	 * 用来处理spring配置中的lookup-method和replace-method属性的
 	 * Validate and prepare the given method override.
 	 * Checks for existence of a method with the specified name,
 	 * marking it as not overloaded if none found.
@@ -1133,6 +1135,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @throws BeanDefinitionValidationException in case of validation failure
 	 */
 	protected void prepareMethodOverride(MethodOverride mo) throws BeanDefinitionValidationException {
+		// 获取定义类中的对应方法名的个数
 		int count = ClassUtils.getMethodCountForName(getBeanClass(), mo.getMethodName());
 		if (count == 0) {
 			throw new BeanDefinitionValidationException(

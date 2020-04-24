@@ -39,7 +39,10 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
-/**
+/**为实现了FactoryBean接口的子类提供的模板父类, 这些子类根据flag来决定创建singleton对象还是prototype对象
+ * 如果flag为true(默认的),这个类就会在初始化的时候创建对象, 然后在每次调用#getObject()方法时返回这个创建的singleton对象
+ * 如果flag为false,这个类会在每次调用#getObject方法时创建一个新的实例对象
+ * 子类负责实现抽象的#createInstance这个模板方法, 来真正的创建对象
  * Simple template superclass for {@link FactoryBean} implementations that
  * creates a singleton or a prototype object, depending on a flag.
  *
@@ -106,7 +109,7 @@ public abstract class AbstractFactoryBean<T>
 		this.beanFactory = beanFactory;
 	}
 
-	/**
+	/**返回这个FactoryBean所运行的bean工厂对象
 	 * Return the BeanFactory that this bean runs in.
 	 */
 	@Nullable
@@ -132,7 +135,7 @@ public abstract class AbstractFactoryBean<T>
 		}
 	}
 
-	/**
+	/**饥饿模式创建singleton实例
 	 * Eagerly create the singleton instance, if necessary.
 	 */
 	@Override
@@ -145,7 +148,7 @@ public abstract class AbstractFactoryBean<T>
 	}
 
 
-	/**
+	/**暴露单例的实例bean, 或者创建一个新的prototype实例
 	 * Expose the singleton instance or create a new prototype instance.
 	 * @see #createInstance()
 	 * @see #getEarlySingletonInterfaces()
@@ -160,7 +163,7 @@ public abstract class AbstractFactoryBean<T>
 		}
 	}
 
-	/**
+	/**获取"先实例化单例"的bean实例, 在循环依赖的场景中, 在没有循环依赖的场景中不会被调用
 	 * Determine an 'early singleton' instance, exposed in case of a
 	 * circular reference. Not called in a non-circular scenario.
 	 */
@@ -172,13 +175,14 @@ public abstract class AbstractFactoryBean<T>
 					getClass().getName() + " does not support circular references");
 		}
 		if (this.earlySingletonInstance == null) {
+			// jdk反射实例化bean
 			this.earlySingletonInstance = (T) Proxy.newProxyInstance(
 					this.beanClassLoader, ifcs, new EarlySingletonInvocationHandler());
 		}
 		return this.earlySingletonInstance;
 	}
 
-	/**
+	/**返回这个FactoryBean持有的singleton实例
 	 * Expose the singleton instance (for access through the 'early singleton' proxy).
 	 * @return the singleton instance that this FactoryBean holds
 	 * @throws IllegalStateException if the singleton instance is not initialized
@@ -189,7 +193,7 @@ public abstract class AbstractFactoryBean<T>
 		return this.singletonInstance;
 	}
 
-	/**
+	/**singleton模式下销毁已经持有的singleton实例
 	 * Destroy the singleton instance, if any.
 	 * @see #destroyInstance(Object)
 	 */
@@ -201,7 +205,7 @@ public abstract class AbstractFactoryBean<T>
 	}
 
 
-	/**
+	/**继承自FactoryBean接口的方法
 	 * This abstract method declaration mirrors the method in the FactoryBean
 	 * interface, for a consistent offering of abstract template methods.
 	 * @see org.springframework.beans.factory.FactoryBean#getObjectType()
@@ -210,7 +214,9 @@ public abstract class AbstractFactoryBean<T>
 	@Nullable
 	public abstract Class<?> getObjectType();
 
-	/**
+	/**子类必须重写的模板方法, 用来构建beanFactory返回的bean实例
+	 * singleton模式下, 在初始化FactoryBean的时候被触发
+	 * prototype模式下, 在每次调用getObject()方法时被触发
 	 * Template method that subclasses must override to construct
 	 * the object returned by this factory.
 	 * <p>Invoked on initialization of this FactoryBean in case of
@@ -221,7 +227,7 @@ public abstract class AbstractFactoryBean<T>
 	 */
 	protected abstract T createInstance() throws Exception;
 
-	/**
+	/**返回这个factoryBean暴露的单例bean所实现的接口数组
 	 * Return an array of interfaces that a singleton object exposed by this
 	 * FactoryBean is supposed to implement, for use with an 'early singleton
 	 * proxy' that will be exposed in case of a circular reference.

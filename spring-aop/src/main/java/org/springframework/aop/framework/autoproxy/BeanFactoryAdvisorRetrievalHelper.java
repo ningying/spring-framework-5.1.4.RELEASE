@@ -58,7 +58,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 	}
 
 
-	/**
+	/**从当前的beanFactory中查找所有符合条件的Advisor, 忽略FactoryBean和那些正在创建的Advisor Bean
 	 * Find all eligible Advisor beans in the current bean factory,
 	 * ignoring FactoryBeans and excluding beans that are currently in creation.
 	 * @return the list of {@link org.springframework.aop.Advisor} beans
@@ -79,6 +79,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 		}
 
 		List<Advisor> advisors = new ArrayList<>();
+		// 根据advisorNames从BeanFactory中取Advisor beans
 		for (String name : advisorNames) {
 			if (isEligibleBean(name)) {
 				if (this.beanFactory.isCurrentlyInCreation(name)) {
