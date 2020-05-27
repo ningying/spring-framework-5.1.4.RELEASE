@@ -70,6 +70,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 		if (advisorNames == null) {
 			// Do not initialize FactoryBeans here: We need to leave all regular beans
 			// uninitialized to let the auto-proxy creator apply to them!
+			// 如果advisorNames为空, 就初始化
 			advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 					this.beanFactory, Advisor.class, true, false);
 			this.cachedAdvisorBeanNames = advisorNames;
@@ -114,8 +115,8 @@ public class BeanFactoryAdvisorRetrievalHelper {
 		return advisors;
 	}
 
-	/**
-	 * Determine whether the aspect bean with the given name is eligible.
+	/**判断这个切面bean的名字是否合格
+	 * Determine whether the aspect bean with the given name is eligible.(合格的)
 	 * <p>The default implementation always returns {@code true}.
 	 * @param beanName the name of the aspect bean
 	 * @return whether the bean is eligible

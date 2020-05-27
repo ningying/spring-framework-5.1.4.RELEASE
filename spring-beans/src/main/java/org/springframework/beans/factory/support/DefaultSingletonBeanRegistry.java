@@ -157,8 +157,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Assert.notNull(singletonFactory, "Singleton factory must not be null");
 		synchronized (this.singletonObjects) {
 			if (!this.singletonObjects.containsKey(beanName)) {
+				// 把singleFactory加到单例工厂Map中singletonFactories
 				this.singletonFactories.put(beanName, singletonFactory);
+				// beanName的单例已经创建完成, 把beanName从earlySingletonObjects中移除
 				this.earlySingletonObjects.remove(beanName);
+				// beanName的单例已经创建完成, 把beanName加到registeredSingletons中
 				this.registeredSingletons.add(beanName);
 			}
 		}
@@ -214,8 +217,12 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(beanName, "Bean name must not be null");
+		//全局变量需要同步
 		synchronized (this.singletonObjects) {
+			//首先检查对应的bean是否已经加载过了, 因为singleton模式其实就是复用已创建的bean,
+			//所以这一步是必须的
 			Object singletonObject = this.singletonObjects.get(beanName);
+			//如果为空才可以进行singleton的bean初始化
 			if (singletonObject == null) {
 				// 判断是否调用了destroySingletons方法销毁了单例bean
 				if (this.singletonsCurrentlyInDestruction) {
@@ -234,7 +241,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
-					// 获取单例bean的入口
+					// 初始化bean, 获取单例bean的入口
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}
@@ -360,7 +367,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		}
 	}
 
-	/**
+	/**加载单例后的处理方法
 	 * Callback after singleton creation.
 	 * <p>The default implementation marks the singleton as not in creation anymore.
 	 * @param beanName the name of the singleton that has been created
@@ -424,6 +431,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		synchronized (this.dependentBeanMap) {
 			Set<String> dependentBeans =
 					this.dependentBeanMap.computeIfAbsent(canonicalName, k -> new LinkedHashSet<>(8));
+			// 这里直接就把dependentBeanMap里面的key对应的set集合改变了
 			if (!dependentBeans.add(dependentBeanName)) {
 				return;
 			}
@@ -432,6 +440,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		synchronized (this.dependenciesForBeanMap) {
 			Set<String> dependenciesForBean =
 					this.dependenciesForBeanMap.computeIfAbsent(dependentBeanName, k -> new LinkedHashSet<>(8));
+			// 这里直接就把dependenciesForBeanMap里面的key对应的set集合改变了
 			dependenciesForBean.add(canonicalName);
 		}
 	}

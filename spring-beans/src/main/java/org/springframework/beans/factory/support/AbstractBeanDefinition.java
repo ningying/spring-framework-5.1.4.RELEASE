@@ -150,7 +150,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	/** 是否延迟加载, 对应bean属性lazy-init */
 	private boolean lazyInit = false;
 
-	/** 自动注入模式, 对应bean属性autowire */
+	/** 自动注入模式, 对应bean属性autowire , 区分是通过类型还是名称自动注入*/
 	private int autowireMode = AUTOWIRE_NO;
 
 	/** 依赖检查, spring 3.0后弃用这个属性 */
@@ -600,6 +600,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 			// Work out whether to apply setter autowiring or constructor autowiring.
 			// If it has a no-arg constructor it's deemed to be setter autowiring,
 			// otherwise we'll try constructor autowiring.
+			// 判断是用setter方法注入还是用构造方法注入
+			// 如果有无参构造方法, 就认为是setter方法注入
+			// 否则用构造方法注入
 			Constructor<?>[] constructors = getBeanClass().getConstructors();
 			for (Constructor<?> constructor : constructors) {
 				if (constructor.getParameterCount() == 0) {
