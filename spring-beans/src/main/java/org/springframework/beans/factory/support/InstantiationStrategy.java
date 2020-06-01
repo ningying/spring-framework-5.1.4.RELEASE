@@ -35,7 +35,7 @@ import org.springframework.lang.Nullable;
  */
 public interface InstantiationStrategy {
 
-	/**
+	/**从bean工厂中返回一个名称为beanName的bean实例
 	 * Return an instance of the bean with the given name in this factory.
 	 * @param bd the bean definition
 	 * @param beanName the name of the bean when it is created in this context.

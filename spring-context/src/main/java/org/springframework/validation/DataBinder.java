@@ -233,14 +233,14 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 		this.autoGrowCollectionLimit = autoGrowCollectionLimit;
 	}
 
-	/**
+	/**返回当前自动增长的数组/集合大小限制
 	 * Return the current limit for array and collection auto-growing.
 	 */
 	public int getAutoGrowCollectionLimit() {
 		return this.autoGrowCollectionLimit;
 	}
 
-	/**
+	/**给databinder初始化一个标准的javabean属性获取通道
 	 * Initialize standard JavaBean property access for this DataBinder.
 	 * <p>This is the default; an explicit call just leads to eager initialization.
 	 * @see #initDirectFieldAccess()
@@ -605,7 +605,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 		return this.conversionService;
 	}
 
-	/**
+	/**添加自定义formatter, 使其应用到所有匹配的字段
 	 * Add a custom formatter, applying it to all fields matching the
 	 * {@link Formatter}-declared type.
 	 * <p>Registers a corresponding {@link PropertyEditor} adapter underneath the covers.

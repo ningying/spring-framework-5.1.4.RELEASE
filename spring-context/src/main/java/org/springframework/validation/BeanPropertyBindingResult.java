@@ -86,7 +86,7 @@ public class BeanPropertyBindingResult extends AbstractPropertyBindingResult imp
 		return this.target;
 	}
 
-	/**
+	/**返回这个实例对象所使用的beanWrapper, 如果没有就创建一个
 	 * Returns the {@link BeanWrapper} that this instance uses.
 	 * Creates a new one if none existed before.
 	 * @see #createBeanWrapper()
@@ -102,7 +102,7 @@ public class BeanPropertyBindingResult extends AbstractPropertyBindingResult imp
 		return this.beanWrapper;
 	}
 
-	/**
+	/**给当前目标对象创建一个新的beanWrapper
 	 * Create a new {@link BeanWrapper} for the underlying target object.
 	 * @see #getTarget()
 	 */

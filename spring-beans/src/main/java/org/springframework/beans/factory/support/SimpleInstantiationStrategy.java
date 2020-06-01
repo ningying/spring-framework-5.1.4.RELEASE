@@ -57,6 +57,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	}
 
 
+	// 从bean工厂中返回一个名称为beanName的bean实例
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) {
 		// Don't override the class with CGLIB if no overrides.

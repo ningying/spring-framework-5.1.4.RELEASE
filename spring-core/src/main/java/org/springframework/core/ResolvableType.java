@@ -381,7 +381,7 @@ public class ResolvableType implements Serializable {
 				this.type instanceof GenericArrayType || resolveType().isArray());
 	}
 
-	/**
+	/**返回能代表数组中元素类型的解析类ResolvableType, 如果type不是数组就返回NONE
 	 * Return the ResolvableType representing the component type of the array or
 	 * {@link #NONE} if this type does not represent an array.
 	 * @see #isArray()
@@ -797,13 +797,17 @@ public class ResolvableType implements Serializable {
 
 	@Nullable
 	private Class<?> resolveClass() {
+		// 如果type是空类型, 直接返回null
 		if (this.type == EmptyType.INSTANCE) {
 			return null;
 		}
+		// 如果type是class类型, 直接强转
 		if (this.type instanceof Class) {
 			return (Class<?>) this.type;
 		}
+		// 如果type是数组类型, 就返回带有子元素类型的泛型数组类
 		if (this.type instanceof GenericArrayType) {
+			// 获取成员遍历的类型, 解析成class
 			Class<?> resolvedComponent = getComponentType().resolve();
 			return (resolvedComponent != null ? Array.newInstance(resolvedComponent, 0).getClass() : null);
 		}
@@ -1375,24 +1379,24 @@ public class ResolvableType implements Serializable {
 		return forType(typeReference.getType(), null, null);
 	}
 
-	/**
+	/**由变量解析器VariableResolver返回type类型对应的一个解析类型ResolvableType
 	 * Return a {@link ResolvableType} for the specified {@link Type} backed by a given
 	 * {@link VariableResolver}.
-	 * @param type the source type or {@code null}
-	 * @param variableResolver the variable resolver or {@code null}
-	 * @return a {@link ResolvableType} for the specified {@link Type} and {@link VariableResolver}
+	 * @param type the source type or {@code null} 原始类型
+	 * @param variableResolver the variable resolver or {@code null} 变量解析器
+	 * @return a {@link ResolvableType} for the specified {@link Type} and {@link VariableResolver} 解析后的类型
 	 */
 	static ResolvableType forType(@Nullable Type type, @Nullable VariableResolver variableResolver) {
 		return forType(type, null, variableResolver);
 	}
 
-	/**
+	/**由变量解析器VariableResolver返回type类型对应的一个解析类型ResolvableType
 	 * Return a {@link ResolvableType} for the specified {@link Type} backed by a given
 	 * {@link VariableResolver}.
-	 * @param type the source type or {@code null}
-	 * @param typeProvider the type provider or {@code null}
-	 * @param variableResolver the variable resolver or {@code null}
-	 * @return a {@link ResolvableType} for the specified {@link Type} and {@link VariableResolver}
+	 * @param type the source type or {@code null} 原始类型
+	 * @param typeProvider the type provider or {@code null} 类型提供方
+	 * @param variableResolver the variable resolver or {@code null} 类型解析器
+	 * @return a {@link ResolvableType} for the specified {@link Type} and {@link VariableResolver} 解析后的类型
 	 */
 	static ResolvableType forType(
 			@Nullable Type type, @Nullable TypeProvider typeProvider, @Nullable VariableResolver variableResolver) {
@@ -1406,6 +1410,7 @@ public class ResolvableType implements Serializable {
 
 		// For simple Class references, build the wrapper right away -
 		// no expensive resolution necessary, so not worth caching...
+		// 如果type是简单的class类型, 直接包装一层, 这里没有什么大的开销, 没必要缓存
 		if (type instanceof Class) {
 			return new ResolvableType(type, typeProvider, variableResolver, (ResolvableType) null);
 		}

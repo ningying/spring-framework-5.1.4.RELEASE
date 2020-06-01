@@ -33,6 +33,7 @@ import org.springframework.format.Formatter;
  */
 public abstract class AbstractNumberFormatter implements Formatter<Number> {
 
+	// 宽大 宽容 仁慈
 	private boolean lenient = false;
 
 

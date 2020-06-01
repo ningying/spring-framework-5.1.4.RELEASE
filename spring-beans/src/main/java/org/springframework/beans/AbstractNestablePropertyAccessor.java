@@ -113,7 +113,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		this.typeConverterDelegate = new TypeConverterDelegate(this);
 	}
 
-	/**
+	/**给指定的对象object创建一个访问器
 	 * Create a new accessor for the given object.
 	 * @param object object wrapped by this accessor
 	 */

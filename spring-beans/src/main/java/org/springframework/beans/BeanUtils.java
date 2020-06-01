@@ -152,15 +152,15 @@ public abstract class BeanUtils {
 		return (T) instantiateClass(clazz);
 	}
 
-	/**
+	/**这个一个简便的方法, 根据给定的构造方法初始化一个实例对象
 	 * Convenience method to instantiate a class using the given constructor.
 	 * <p>Note that this method tries to set the constructor accessible if given a
 	 * non-accessible (that is, non-public) constructor, and supports Kotlin classes
 	 * with optional parameters and default values.
-	 * @param ctor the constructor to instantiate
+	 * @param ctor the constructor to instantiate 指定的初始化构造方法
 	 * @param args the constructor arguments to apply (use {@code null} for an unspecified
-	 * parameter if needed for Kotlin classes with optional parameters and default values)
-	 * @return the new instance
+	 * parameter if needed for Kotlin classes with optional parameters and default values)  构造方法参数
+	 * @return the new instance 实例对象
 	 * @throws BeanInstantiationException if the bean cannot be instantiated
 	 * @see Constructor#newInstance
 	 */

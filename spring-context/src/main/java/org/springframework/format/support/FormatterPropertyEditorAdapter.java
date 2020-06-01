@@ -35,7 +35,7 @@ public class FormatterPropertyEditorAdapter extends PropertyEditorSupport {
 	private final Formatter<Object> formatter;
 
 
-	/**
+	/**为指定的formatter创建一个新的格式化属性编辑器适配器FormatterPropertyEditorAdapter
 	 * Create a new {@code FormatterPropertyEditorAdapter} for the given {@link Formatter}.
 	 * @param formatter the {@link Formatter} to wrap
 	 */

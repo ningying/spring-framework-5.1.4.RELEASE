@@ -692,10 +692,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of ConfigurableListableBeanFactory interface
 	//---------------------------------------------------------------------
 
+	// 把指定的依赖类型和对应的值注册到bean工厂
 	@Override
 	public void registerResolvableDependency(Class<?> dependencyType, @Nullable Object autowiredValue) {
 		Assert.notNull(dependencyType, "Dependency type must not be null");
 		if (autowiredValue != null) {
+			// 如果autowiredValue不是ObjectFactory类型, 也不是dependencyType类型, 直接抛异常
 			if (!(autowiredValue instanceof ObjectFactory || dependencyType.isInstance(autowiredValue))) {
 				throw new IllegalArgumentException("Value [" + autowiredValue +
 						"] does not implement specified dependency type [" + dependencyType.getName() + "]");
@@ -1409,13 +1411,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return new FactoryAwareOrderSourceProvider(instancesToBeanNames);
 	}
 
-	/**
+	/**查找符合指定类型requiredType的bean实例, 在自动注入指定bean的时候会被调用
 	 * Find bean instances that match the required type.
 	 * Called during autowiring for the specified bean.
-	 * @param beanName the name of the bean that is about to be wired
-	 * @param requiredType the actual type of bean to look for
+	 * @param beanName the name of the bean that is about to be wired 需要注入的bean的名称
+	 * @param requiredType the actual type of bean to look for 需要注入的bean的类型(可能是数组或者集合)
 	 * (may be an array component type or collection element type)
-	 * @param descriptor the descriptor of the dependency to resolve
+	 * @param descriptor the descriptor of the dependency to resolve 需要解析的依赖的描述器
 	 * @return a Map of candidate names and candidate instances that match
 	 * the required type (never {@code null})
 	 * @throws BeansException in case of errors
@@ -1425,13 +1427,16 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	protected Map<String, Object> findAutowireCandidates(
 			@Nullable String beanName, Class<?> requiredType, DependencyDescriptor descriptor) {
 
+		// 从bean工厂中根据类型requiredType获取bean的名称集合
 		String[] candidateNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 				this, requiredType, true, descriptor.isEager());
 		Map<String, Object> result = new LinkedHashMap<>(candidateNames.length);
 		for (Map.Entry<Class<?>, Object> classObjectEntry : this.resolvableDependencies.entrySet()) {
 			Class<?> autowiringType = classObjectEntry.getKey();
+			// 如果autowiringType属于requiredType类型
 			if (autowiringType.isAssignableFrom(requiredType)) {
 				Object autowiringValue = classObjectEntry.getValue();
+				// 把autowiringValue解析成requiredType类型的对象
 				autowiringValue = AutowireUtils.resolveAutowiringValue(autowiringValue, requiredType);
 				if (requiredType.isInstance(autowiringValue)) {
 					result.put(ObjectUtils.identityToString(autowiringValue), autowiringValue);

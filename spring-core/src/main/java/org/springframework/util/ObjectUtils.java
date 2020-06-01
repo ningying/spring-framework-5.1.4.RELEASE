@@ -156,7 +156,7 @@ public abstract class ObjectUtils {
 		return false;
 	}
 
-	/**
+	/**拆装给定的对象obj, 这个对象有可能是Optional类型
 	 * Unwrap the given object which is potentially a {@link java.util.Optional}.
 	 * @param obj the candidate object
 	 * @return either the value held within the {@code Optional}, {@code null}
