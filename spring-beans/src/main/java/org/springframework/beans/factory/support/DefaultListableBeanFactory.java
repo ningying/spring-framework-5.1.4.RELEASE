@@ -1439,6 +1439,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				// 把autowiringValue解析成requiredType类型的对象
 				autowiringValue = AutowireUtils.resolveAutowiringValue(autowiringValue, requiredType);
 				if (requiredType.isInstance(autowiringValue)) {
+					// key是一个可以代表obj对象的字符串(类名 + @ + 十六进制字符串), value是autowiringValue
 					result.put(ObjectUtils.identityToString(autowiringValue), autowiringValue);
 					break;
 				}
@@ -1651,7 +1652,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				(candidateName.equals(beanName) || ObjectUtils.containsElement(getAliases(beanName), candidateName)));
 	}
 
-	/**
+	/**判断指定的beanName/candidateName是否是自引用, 如candidate是否指向原始bean或者原始bean上的工厂方法
 	 * Determine whether the given beanName/candidateName pair indicates a self reference,
 	 * i.e. whether the candidate points back to the original bean or to a factory method
 	 * on the original bean.

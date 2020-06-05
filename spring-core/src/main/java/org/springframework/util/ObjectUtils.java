@@ -599,7 +599,7 @@ public abstract class ObjectUtils {
 	// Convenience methods for toString output
 	//---------------------------------------------------------------------
 
-	/**
+	/**返回一个字符串代表obj对象(类名 + @ + 十六进制字符串)
 	 * Return a String representation of an object's overall identity.
 	 * @param obj the object (may be {@code null})
 	 * @return the object's identity as String representation,
